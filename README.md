@@ -171,7 +171,7 @@ manajemen projrect react
 47. authContext dengan value isAuth, login, logout (dari state function) dan kasih schildren
 48. guakan authProfider di main.jsx
 
-### Hooks
+### Hooks Fetch data
 
 48. custom Hook | AuthContext.jsx
 49. ganti ini menjadi hook di app.jsx
@@ -203,6 +203,8 @@ const { isAuthenticated, logout } = UseAuth();
 
 noted handleLogout dianti logout (bawaan hooknya)
 jika custom hooknya banyak maka dibuat di folder hook sendiri
+
+### Hooks Login
 
 50. pangil login dari custom auth
 51. panggil login mengguakan react context
@@ -249,3 +251,40 @@ yang awalnya dibawah ini ganti menjadi diatas ini
 ```
 
 logic hit API loginnya berada di AuthContext
+
+### Hooks fetch Shop
+
+- buat shopService.js di folder api
+- pindah fetch dan buat filter didalamnya
+
+```js
+useEffect(() => {
+  const fetchShops = async () => {
+    setLoading(true);
+    try {
+      const response = await axiosInstance.get("/shops");
+      const data = response.data;
+      if (data.isSuccess) {
+        setShops(data.data.shops);
+      } else {
+        setError("error");
+      }
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  fetchShops();
+}, []);
+```
+
+itu dipindah ke shopService dan di hompage panggil seperti ini
+
+```js
+useEffect(() => {
+  handleFetchShops();
+}, [pagination.currentPage, pagination.pageSize]);
+```
+
+noted buat filtering dan paginationsnya
