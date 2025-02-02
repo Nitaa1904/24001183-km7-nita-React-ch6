@@ -1,41 +1,42 @@
-import { useEffect, useState } from "react";
 import "./App.css";
-import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import NavbarWithStyling from "./components/navbar/navbarWithStyling";
 import Homepage from "./page/Homepage";
 import Login from "./page/Login";
 import NotFound from "./page/NotFoundView";
-import { isTokenExpired } from "../utils/auth";
+import { UseAuth } from "./context/AuthContext";
 
 function App() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
-  // 15. implementasi useEffect dan useState
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // // 15. implementasi useEffect dan useState
+  // const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // 16. pengecekan user nya login gak
-  useEffect(() => {
-    const token = localStorage.getItem("token");
+  // // 16. pengecekan user nya login gak
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
 
-    if (!token || isTokenExpired(token)) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("username");
-      navigate("/login");
-    }
-    setIsAuthenticated(!!token); // 17. jika token trus maka jadi false
-  }, []);
+  //   if (!token || isTokenExpired(token)) {
+  //     localStorage.removeItem("token");
+  //     localStorage.removeItem("username");
+  //     navigate("/login");
+  //   }
+  //   setIsAuthenticated(!!token); // 17. jika token trus maka jadi false
+  // }, []);
 
-  // 24. buat function untuk henling logout
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("username");
-    setIsAuthenticated(false);
-  };
+  // // 24. buat function untuk henling logout
+  // const handleLogout = () => {
+  //   localStorage.removeItem("token");
+  //   localStorage.removeItem("username");
+  //   setIsAuthenticated(false);
+  // };
 
+  // 49. ganti yang diatas menjadi hook
+  const { isAuthenticated, logout } = UseAuth();
   return (
     <>
       {/* 18. gunakan auth di navbar */}
-      {isAuthenticated && <NavbarWithStyling onLogout={handleLogout} />}
+      {isAuthenticated && <NavbarWithStyling onLogout={logout} />}
       {/* 25. panggil handel Logout */}
       <Routes>
         {/* 14. buat routing homepage */}

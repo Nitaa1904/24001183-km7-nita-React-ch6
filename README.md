@@ -84,7 +84,8 @@ router.get("", authenticate, shopController.getAllShop);
 
 untuk membuat user login dulu baru bisa get API (implement auth di route)
 
-- buat Login.jsx (isinya const handleLogin, ambil post dari API, const token, dan form login )
+- buat Login.jsx (isinya const handleLogin, ambil post dari API, const token, dan form login)
+- buat utils/auth.js untuk set isTokenExpired
 
 14. buat routing homepage di app.jsx
 15. implementasi useEffect dan useState
@@ -132,3 +133,119 @@ notifications komponen dinamis jadi bisa dipakai di page mana aja
 34. buat notification succes
 35. saat success login maka langsung navigate ke homepage
 36. tambah navigate
+
+## React Context
+
+membersihkan komonen dari hal2 yang diluar state (handle hit API)
+manajemen projrect react
+
+## folder API
+
+- tempat mainan API (axiosInstance.js) base practice axios untuk hendel agar tidak redundan
+- berguna saat banyakhit API
+
+37. gunakan axiosInstance di fect API | homepage.jsx
+38. gunakan axiosInstance di post API | login.jsx
+
+## Refactor State
+
+- auth profider
+- buat context/AuthContext.js
+
+39. funtion AuthProvider dengan props children
+40. tambah authContext yang diambil dari createContext
+41. hendel auth di aplikasi | statenya false karena homepagenya terbatas (login dulu)
+42. panggil user dan setuser | null karena jika belum login tidak ada datanya
+43. handling navigasi
+44. pidah handling auth ke sini (useEffect)
+45. panggil function login untuk handling auth
+    parameter token untuk reset ke lokalStorage
+    setAuth true karena berhasil login
+    setUser dekode token dengan jwtDecode
+    jika sudah sukses login navigate ke homepae
+46. panggil function logout untuk handling auth
+    (tanpa parameter) remove token
+    setAuth false
+    setUser null
+    navigate ke login
+47. authContext dengan value isAuth, login, logout (dari state function) dan kasih schildren
+48. guakan authProfider di main.jsx
+
+### Hooks
+
+48. custom Hook | AuthContext.jsx
+49. ganti ini menjadi hook di app.jsx
+
+```js
+const navigate = useNavigate();
+const [isAuthenticated, setIsAuthenticated] = useState(false);
+useEffect(() => {
+  const token = localStorage.getItem("token");
+  if (!token || isTokenExpired(token)) {
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
+    navigate("/login");
+  }
+  setIsAuthenticated(!!token);
+}, []);
+const handleLogout = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("username");
+  setIsAuthenticated(false);
+};
+```
+
+menjadi
+
+```js
+const { isAuthenticated, logout } = UseAuth();
+```
+
+noted handleLogout dianti logout (bawaan hooknya)
+jika custom hooknya banyak maka dibuat di folder hook sendiri
+
+50. pangil login dari custom auth
+51. panggil login mengguakan react context
+
+```js
+await login(email, password);
+```
+
+yang awalnya dibawah ini ganti menjadi diatas ini
+
+```js
+      const response = await axiosInstance.post("/auth/login", {
+        email,
+        password,
+      });
+      console.log(response);
+
+      if (response.data.isSuccess) {
+        const token = response.data.data.token;
+        const username = response.data.data.username;
+
+        localStorage.setItem("token", token);
+        localStorage.setItem("username", username);
+        localStorage.setItem(
+          "rahasia nita",
+          "aku bangga bgt sama kalian FSW2 !"
+        );
+      const response = await axiosInstance.post("/auth/login", {
+        email,
+        password,
+      });
+      console.log(response);
+
+      if (response.data.isSuccess) {
+        const token = response.data.data.token;
+        const username = response.data.data.username;
+
+        localStorage.setItem("token", token);
+        localStorage.setItem("username", username);
+        localStorage.setItem(
+          "rahasia nita",
+          "aku bangga bgt sama kalian FSW2 !"
+        );
+```
+
+logic hit API loginnya berada di AuthContext

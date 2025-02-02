@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import NavbarWithStyling from "../components/navbar/navbarWithStyling";
 import { Button } from "../components/Elements/button/Button";
+import axiosInstance from "../api/axiosInstance";
 
 const people = [
   {
@@ -26,8 +27,7 @@ function Homepage() {
       setLoading(true);
       try {
         // 3. gunakan axios
-        const response = await axios.get("http://localhost:3000/api/v1/shops"); // url dari BE shops
-        console.log(response);
+        const response = await axiosInstance.get("/shops"); //37. gunakan axiosInstance url dari BE shops
 
         // 6. menyimpan data ke state (update)
         const data = response.data; // defind ke variabel

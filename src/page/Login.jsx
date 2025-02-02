@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Notification from "../components/Notifications/Notification";
+import { UseAuth } from "../context/AuthContext";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -12,52 +13,54 @@ function Login() {
   // 35. tambah navigate
   const navigate = useNavigate();
 
+  // 50. pangil login dari custom auth
+  const { login } = UseAuth();
+
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/v1/auth/login",
-        {
-          email,
-          password,
-        }
-      );
-      console.log(response);
+      // 51. panggil login mengguakan react context
+      await login(email, password);
+      // // 38. gunakan axiosInstance
+      // const response = await axiosInstance.post("/auth/login", {
+      //   email,
+      //   password,
+      // });
+      // console.log(response);
 
-      if (response.data.isSuccess) {
-        const token = response.data.data.token;
-        const username = response.data.data.username;
+      // if (response.data.isSuccess) {
+      //   const token = response.data.data.token;
+      //   const username = response.data.data.username;
 
-        localStorage.setItem("token", token);
-        localStorage.setItem("username", username);
-        localStorage.setItem(
-          "rahasia nita",
-          "aku bangga bgt sama kalian FSW2 !"
-        );
+      //   localStorage.setItem("token", token);
+      //   localStorage.setItem("username", username);
+      //   localStorage.setItem(
+      //     "rahasia nita",
+      //     "aku bangga bgt sama kalian FSW2 !"
+      //   );
 
-        // 34. buat notification succes
-        setNotification({
-          type: "success",
-          message: response.data.message || "Successfully login",
-          description: "You are now redirect to homepage",
-        });
+      // 34. buat notification succes
+      setNotification({
+        type: "success",
+        message: response.data.message || "Successfully login",
+        description: "You are now redirect to homepage",
+      });
 
-        // 36. redirect ke home saat succes
-        setTimeout(() => {
-          navigate("/");
-          navigate(0); // untuk reload
-        }, 2000);
-      } else {
-        console.log("MASUK SINI GAK????");
-      }
+      // 36. redirect ke home saat succes
+      setTimeout(() => {
+        setNotification(null);
+      }, 2000);
     } catch (err) {
       // 31. buat seNotification untuk mengambil error dari BE
       setNotification({
         type: "error",
-        message: err.response.data.message || "An error occured",
+        message: err.message || "An error occured",
         description: "please try again",
       });
+      setTimeout(() => {
+        setNotification(null);
+      }, 2000);
     }
 
     // 33. time untuk notification
