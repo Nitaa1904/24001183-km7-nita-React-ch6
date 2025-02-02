@@ -1,11 +1,9 @@
 function About(props) {
-  const { name, age, address } = props;
+  const { username, address } = props;
   return (
     <>
-      <h1>Hi My name is {name}</h1>
-      <p>
-        I am {age} years old and live in {address}
-      </p>
+      <h1>Hi {username}</h1>
+      <p>welcome to my word and live in {address}</p>
     </>
   );
 }

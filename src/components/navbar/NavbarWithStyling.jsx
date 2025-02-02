@@ -1,51 +1,41 @@
 import { useState } from "react";
 import "./NavbarWithStyling.css";
 import About from "../about/About";
-import Button from "../../components/Elements/button/HoverButton";
+import { Button } from "../Elements/button/Button";
 
-const NavbarWithStyling = ({ menu, name, age, address }) => {
+// 23. propstnya simpan (onLogout)
+const NavbarWithStyling = ({ menu, username, age, address, onLogout }) => {
   const [biodata, setBiodata] = useState({});
 
-  function handleClick(name) {
-    console.log(`clicked ${name}`);
-    setBiodata({ ...biodata, name: name, age: age, address: address });
+  function handleClick(username) {
+    console.log(`clicked ${username}`);
+    setBiodata({ ...biodata, username, age, address });
   }
 
   return (
-    <>
-      <div className="navbar">
-        <header></header>
-        <h1 className="title">FSW 2 - {name}</h1>
-        <ul className="list">
+    <div className="flex flex-col items-center  w-full">
+      <nav className="navbar w-full bg-gradient-to-r from-teal-500 to-cyan-600 shadow-xl rounded-b-2xl p-6 flex justify-between items-center fixed top-0 left-0 z-50">
+        <ul className="list flex flex-wrap space-x-6">
           <li className="item">
-            <a href="#" className="link">
-              Home
+            <a
+              href="#"
+              className="link text-white hover:text-gray-300 transition-all"
+            >
+              Akun
             </a>
           </li>
-          {menu &&
-            menu.map((item, index) => (
-              <li key={index} className="item">
-                <a href="#" className="link">
-                  {item}
-                </a>
-              </li>
-            ))}
-          <li className="item">
-            <a href="#" className="link">
-              Logout
-            </a>
-          </li>
-          <Button onSelect={() => handleClick(name)}>Click me</Button>
         </ul>
-      </div>
-      <div>
-        <About
-          name={biodata.name}
-          age={biodata.age}
-          address={biodata.address}
-        />
-      </div>
-    </>
+        <header className="text-white font-bold text-2xl">Welcome</header>
+        <h1 className="title text-white text-3xl font-extrabold drop-shadow-md">
+          FSW 2 - {username}
+        </h1>
+        {/* 22. buat button onclick={onLogout} */}
+        <Button handlerAction={onLogout}>Logout</Button>
+      </nav>
+      <main className="w-full max-w-4xl p-6 bg-white rounded-xl shadow-2xl drop-shadow-lg shadow-teal-900/50 m-16">
+        <About name={biodata.username} address={biodata.address} />
+      </main>
+    </div>
   );
 };
 
